@@ -6,7 +6,7 @@ function initKeys() {
   if (apiKeys.length === 0) {
     const envKeys = process.env.GEMINI_API_KEYS?.split(',') || [];
     if (envKeys.length > 0) {
-      apiKeys = envKeys.map(k => k.trim()).filter(k => k.startsWith('AIxAy'));
+      apiKeys = envKeys.map(k => k.trim()).filter(k => k.length > 0);
     }
   }
   return apiKeys;
@@ -27,9 +27,9 @@ export async function POST(request) {
     const keys = initKeys();
 
     if (action === 'add') {
-      if (!key || !key.startsWith('AIxAy')) {
+      if (!key || key.length < 10) {
         return NextResponse.json(
-          { error: 'Format API Key tidak valid. Harus dimulai dengan AIxAy' },
+          { error: 'API Key tidak valid. Minimal 10 karakter.' },
           { status: 400 }
         );
       }
