@@ -81,7 +81,7 @@ export default function Home() {
           </p>
         </div>
 
-        {/* MENU NAVIGASI - GLASS CARD */}
+        {/* MENU NAVIGASI */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-10">
           <Link href="/" className="glass hover:border-purple-500/30 transition-all duration-300 p-4 rounded-xl text-center group card-hover">
             <div className="text-2xl mb-1">🏠</div>
@@ -108,9 +108,7 @@ export default function Home() {
         {/* GRID UTAMA */}
         <div className="grid md:grid-cols-3 gap-6">
           
-          {/* KOLOM KIRI: INFO */}
           <div className="md:col-span-2 space-y-6">
-            
             <div className="glass rounded-2xl p-8 card-hover">
               <h2 className="text-2xl font-bold text-white mb-4">📖 Selamat Datang</h2>
               <p className="text-gray-300 leading-relaxed">
@@ -144,12 +142,9 @@ export default function Home() {
             </div>
           </div>
 
-          {/* KOLOM KANAN: API KEYS */}
           <div className="space-y-6" id="api">
-            
             <div className="glass rounded-2xl p-6 card-hover">
               <h2 className="text-xl font-bold text-white mb-4">🔄 Status</h2>
-              
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
                   <span className="text-gray-400">Kunci Terdaftar:</span>
@@ -170,12 +165,9 @@ export default function Home() {
 
             <div className="glass rounded-2xl p-6 card-hover">
               <h2 className="text-xl font-bold text-white mb-4">🔑 Daftar Key</h2>
-              
               <div className="space-y-2 max-h-40 overflow-y-auto">
                 {apiKeys.length === 0 ? (
-                  <p className="text-gray-500 text-sm text-center py-4">
-                    Belum ada API Key
-                  </p>
+                  <p className="text-gray-500 text-sm text-center py-4">Belum ada API Key</p>
                 ) : (
                   apiKeys.map((key, index) => (
                     <div key={index} className="flex items-center justify-between bg-white/5 p-2 rounded-lg border border-white/5">
@@ -184,12 +176,7 @@ export default function Home() {
                       </span>
                       <div className="flex gap-2">
                         <span className="badge-purple">Key {index + 1}</span>
-                        <button
-                          onClick={() => handleDeleteKey(index)}
-                          className="text-red-400 hover:text-red-300 text-xs"
-                        >
-                          ✕
-                        </button>
+                        <button onClick={() => handleDeleteKey(index)} className="text-red-400 hover:text-red-300 text-xs">✕</button>
                       </div>
                     </div>
                   ))
@@ -199,7 +186,6 @@ export default function Home() {
 
             <div className="glass rounded-2xl p-6 card-hover">
               <h2 className="text-xl font-bold text-white mb-4">➕ Tambah Kunci</h2>
-              
               <input
                 type="text"
                 className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:border-purple-500/50 focus:outline-none transition-all"
@@ -207,15 +193,9 @@ export default function Home() {
                 value={newKey}
                 onChange={(e) => setNewKey(e.target.value)}
               />
-              
-              <button
-                className="mt-3 w-full btn-primary"
-                onClick={handleAddKey}
-                disabled={!newKey}
-              >
+              <button className="mt-3 w-full btn-primary" onClick={handleAddKey} disabled={!newKey}>
                 Tambah Kunci
               </button>
-
               <p className="text-xs text-gray-500 mt-2 text-center">
                 <a href="https://aistudio.google.com" target="_blank" className="text-purple-400 hover:text-purple-300" rel="noreferrer">
                   Dapatkan di Google AI Studio →
@@ -225,7 +205,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* FOOTER */}
         <div className="mt-10 text-center text-xs text-gray-600 border-t border-white/5 pt-4">
           <p>Manhwa Studio AI v3.0 - Auto Potong Panel & Video Rekap</p>
         </div>
