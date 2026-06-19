@@ -81,8 +81,8 @@ export default function Home() {
           </p>
         </div>
 
-        {/* MENU NAVIGASI */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-10">
+        {/* MENU NAVIGASI - Tambah 1 menu lagi jadi 6 */}
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-10">
           <Link href="/" className="glass hover:border-purple-500/30 transition-all duration-300 p-4 rounded-xl text-center group card-hover">
             <div className="text-2xl mb-1">🏠</div>
             <div className="text-sm font-semibold text-gray-200 group-hover:text-white">Beranda</div>
@@ -98,6 +98,10 @@ export default function Home() {
           <Link href="/voice" className="glass hover:border-yellow-500/30 transition-all duration-300 p-4 rounded-xl text-center group card-hover">
             <div className="text-2xl mb-1">🎙️</div>
             <div className="text-sm font-semibold text-gray-200 group-hover:text-white">Suara AI</div>
+          </Link>
+          <Link href="/novel" className="glass hover:border-orange-500/30 transition-all duration-300 p-4 rounded-xl text-center group card-hover">
+            <div className="text-2xl mb-1">📚</div>
+            <div className="text-sm font-semibold text-gray-200 group-hover:text-white">Novel to Story</div>
           </Link>
           <Link href="#api" className="glass hover:border-pink-500/30 transition-all duration-300 p-4 rounded-xl text-center group card-hover">
             <div className="text-2xl mb-1">🔑</div>
@@ -138,6 +142,20 @@ export default function Home() {
                   <p className="font-semibold text-sm text-white">Video Rekap</p>
                   <p className="text-xs text-gray-400">Jadi video YouTube</p>
                 </div>
+              </div>
+            </div>
+
+            {/* INFO TAMBAHAN: Novel to Story */}
+            <div className="glass rounded-2xl p-6 card-hover border border-orange-500/20">
+              <div className="flex items-center gap-3">
+                <span className="text-3xl">📚</span>
+                <div>
+                  <h3 className="text-lg font-bold text-white">Novel to Story</h3>
+                  <p className="text-sm text-gray-400">Ubah teks novel menjadi cerita dengan 8 gaya berbeda!</p>
+                </div>
+                <Link href="/novel" className="ml-auto bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg text-sm transition">
+                  Coba Sekarang →
+                </Link>
               </div>
             </div>
           </div>
