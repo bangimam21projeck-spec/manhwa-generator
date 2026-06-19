@@ -14,7 +14,30 @@ function getAllKeys() {
   return getEnvKeys();
 }
 
-// ===== CEK MODEL DENGAN COBA SATU PER SATU =====
+// ===== SEMUA KEMUNGKINAN NAMA MODEL =====
+const ALL_MODELS = [
+  // Tanpa awalan models/
+  'gemini-2.5-flash',
+  'gemini-2.5-pro',
+  'gemini-2.0-flash',
+  'gemini-2.0-flash-lite',
+  'gemini-2.0-pro',
+  'gemini-1.5-flash',
+  'gemini-1.5-pro',
+  'gemini-1.0-pro',
+  'gemini-pro',
+  // Dengan awalan models/
+  'models/gemini-2.5-flash',
+  'models/gemini-2.5-pro',
+  'models/gemini-2.0-flash',
+  'models/gemini-2.0-flash-lite',
+  'models/gemini-2.0-pro',
+  'models/gemini-1.5-flash',
+  'models/gemini-1.5-pro',
+  'models/gemini-1.0-pro',
+  'models/gemini-pro',
+];
+
 export async function GET() {
   try {
     const keys = getAllKeys();
@@ -22,36 +45,24 @@ export async function GET() {
     if (keys.length === 0) {
       return NextResponse.json({
         error: 'Tidak ada API Key! Tambahkan key dulu.',
-        hint: 'Tambahkan API Key di halaman Beranda atau di .env.local'
+        hint: 'Tambahkan API Key di halaman Beranda'
       }, { status: 400 });
     }
 
     const apiKey = keys[0];
     const genAI = new GoogleGenerativeAI(apiKey);
     
-    // Daftar model yang mungkin valid
-    const possibleModels = [
-      'gemini-2.0-flash-exp',
-      'gemini-1.5-flash',
-      'gemini-1.5-pro',
-      'gemini-pro',
-      'models/gemini-2.0-flash-exp',
-      'models/gemini-1.5-flash',
-      'models/gemini-1.5-pro',
-      'models/gemini-pro'
-    ];
-
     const workingModels = [];
+    const errors = [];
 
-    for (const modelName of possibleModels) {
+    for (const modelName of ALL_MODELS) {
       try {
         const model = genAI.getGenerativeModel({ model: modelName });
-        // Coba generate konten sederhana
         const result = await model.generateContent('Test');
         await result.response;
         workingModels.push(modelName);
       } catch (error) {
-        // Model ini tidak valid, lanjut ke next
+        errors.push({ model: modelName, error: error.message });
         continue;
       }
     }
@@ -59,7 +70,8 @@ export async function GET() {
     if (workingModels.length === 0) {
       return NextResponse.json({
         error: 'Tidak ada model yang valid untuk API Key ini.',
-        hint: 'Coba buat API Key baru di https://aistudio.google.com'
+        hint: 'Coba buat API Key baru di https://aistudio.google.com',
+        errors: errors.slice(0, 5) // Tampilkan 5 error pertama
       }, { status: 404 });
     }
 
@@ -67,7 +79,9 @@ export async function GET() {
       success: true,
       workingModels: workingModels,
       total: workingModels.length,
-      recommendation: workingModels[0] || 'Tidak ada rekomendasi'
+      recommendation: workingModels[0] || 'Tidak ada rekomendasi',
+      allTested: ALL_MODELS.length,
+      errors: errors.slice(0, 3) // Tampilkan 3 error pertama
     });
 
   } catch (error) {
