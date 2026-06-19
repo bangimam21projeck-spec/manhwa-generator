@@ -1,7 +1,7 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { NextResponse } from 'next/server';
 
-// ===== SISTEM API KEY (copy dari file lain) =====
+// ===== SISTEM API KEY =====
 let webApiKeys = [];
 
 function getEnvKeys() {
@@ -14,7 +14,7 @@ function getAllKeys() {
   return getEnvKeys();
 }
 
-// ===== CEK MODEL =====
+// ===== CEK MODEL DENGAN COBA SATU PER SATU =====
 export async function GET() {
   try {
     const keys = getAllKeys();
@@ -26,30 +26,48 @@ export async function GET() {
       }, { status: 400 });
     }
 
-    // Gunakan key pertama untuk cek
     const apiKey = keys[0];
     const genAI = new GoogleGenerativeAI(apiKey);
     
-    // Dapatkan daftar model
-    const models = await genAI.listModels();
-    
-    // Filter model yang support generateContent
-    const supportedModels = models.models.filter(m => 
-      m.supportedGenerationMethods?.includes('generateContent')
-    );
+    // Daftar model yang mungkin valid
+    const possibleModels = [
+      'gemini-2.0-flash-exp',
+      'gemini-1.5-flash',
+      'gemini-1.5-pro',
+      'gemini-pro',
+      'models/gemini-2.0-flash-exp',
+      'models/gemini-1.5-flash',
+      'models/gemini-1.5-pro',
+      'models/gemini-pro'
+    ];
 
-    // Ambil hanya nama model
-    const modelNames = supportedModels.map(m => m.name);
+    const workingModels = [];
+
+    for (const modelName of possibleModels) {
+      try {
+        const model = genAI.getGenerativeModel({ model: modelName });
+        // Coba generate konten sederhana
+        const result = await model.generateContent('Test');
+        await result.response;
+        workingModels.push(modelName);
+      } catch (error) {
+        // Model ini tidak valid, lanjut ke next
+        continue;
+      }
+    }
+
+    if (workingModels.length === 0) {
+      return NextResponse.json({
+        error: 'Tidak ada model yang valid untuk API Key ini.',
+        hint: 'Coba buat API Key baru di https://aistudio.google.com'
+      }, { status: 404 });
+    }
 
     return NextResponse.json({
       success: true,
-      totalModels: models.models.length,
-      supportedForGenerate: supportedModels.length,
-      models: modelNames,
-      allModels: models.models.map(m => ({
-        name: m.name,
-        supportedMethods: m.supportedGenerationMethods || []
-      }))
+      workingModels: workingModels,
+      total: workingModels.length,
+      recommendation: workingModels[0] || 'Tidak ada rekomendasi'
     });
 
   } catch (error) {
