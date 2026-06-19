@@ -55,7 +55,7 @@ async function expandImageWithAI(imageData, direction, size) {
   
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
 
     // Buat prompt untuk expand gambar
     const prompt = `Perluas gambar ini ke arah ${direction} dengan ukuran ${size}%.
