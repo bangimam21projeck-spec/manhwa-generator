@@ -4,12 +4,8 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 export default function Home() {
-  const [prompt, setPrompt] = useState('');
-  const [result, setResult] = useState('');
-  const [loading, setLoading] = useState(false);
   const [apiKeys, setApiKeys] = useState([]);
   const [newKey, setNewKey] = useState('');
-  const [status, setStatus] = useState('');
 
   useEffect(() => {
     fetchKeys();
@@ -24,38 +20,6 @@ export default function Home() {
       }
     } catch (error) {
       console.error('Error fetching keys:', error);
-    }
-  };
-
-  const handleGenerate = async () => {
-    if (!prompt) {
-      alert('Masukkan deskripsi adegan manhwa!');
-      return;
-    }
-
-    setLoading(true);
-    setStatus('⏳ Sedang generate...');
-
-    try {
-      const response = await fetch('/api/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt })
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        setResult(data.data);
-        setStatus(`✅ Berhasil! Menggunakan ${data.meta.keyUsed}`);
-        fetchKeys();
-      } else {
-        setStatus('❌ Gagal: ' + data.error);
-      }
-    } catch (error) {
-      setStatus('❌ Error: ' + error.message);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -107,77 +71,70 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-4">
       <div className="max-w-6xl mx-auto">
         
-        {/* HEADER + NAVIGASI */}
+        {/* HEADER */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
             🎨 MANHWA STUDIO AI
           </h1>
-          <p className="text-gray-600 mt-2">Buat komik manhwa dengan AI, upload gambar, dan potong panel!</p>
-          
-          {/* NAVIGASI MENU */}
-          <div className="flex justify-center gap-4 mt-4 flex-wrap">
-            <Link href="/" className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition text-sm">
-              🏠 Beranda
-            </Link>
-            <Link href="/editor" className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm">
-              ✂️ Editor Panel
-            </Link>
-            <a href="#api" className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm">
-              🔑 API Keys
-            </a>
-          </div>
+          <p className="text-gray-600 mt-2">Buat komik manhwa dengan AI, potong panel otomatis, dan ekspor!</p>
+        </div>
+
+        {/* MENU NAVIGASI */}
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+          <Link href="/" className="bg-purple-600 text-white p-4 rounded-xl text-center hover:bg-purple-700 transition">
+            🏠 Beranda
+          </Link>
+          <Link href="/editor" className="bg-blue-600 text-white p-4 rounded-xl text-center hover:bg-blue-700 transition">
+            ✂️ Potong Panel
+          </Link>
+          <Link href="/expand" className="bg-green-600 text-white p-4 rounded-xl text-center hover:bg-green-700 transition">
+            🖼️ Perluas Gambar
+          </Link>
+          <Link href="/voice" className="bg-yellow-600 text-white p-4 rounded-xl text-center hover:bg-yellow-700 transition">
+            🎙️ Suara AI
+          </Link>
+          <Link href="#api" className="bg-red-600 text-white p-4 rounded-xl text-center hover:bg-red-700 transition">
+            🔑 Kunci API
+          </Link>
         </div>
 
         {/* GRID UTAMA */}
         <div className="grid md:grid-cols-3 gap-6">
           
-          {/* KOLOM KIRI: GENERATE */}
+          {/* KOLOM KIRI: INFO */}
           <div className="md:col-span-2 space-y-6">
             
             <div className="bg-white rounded-2xl shadow-xl p-6">
-              <h2 className="text-xl font-semibold mb-4">📝 Generate Cerita Manhwa</h2>
+              <h2 className="text-2xl font-bold mb-4">📖 Selamat Datang di Manhwa Studio AI</h2>
+              <p className="text-gray-600 leading-relaxed">
+                Studio lengkap untuk membuat komik manhwa dengan bantuan AI. 
+                Upload gambar panjang, potong otomatis menjadi panel, tambahkan naskah, 
+                dan ekspor hasilnya!
+              </p>
               
-              <textarea
-                className="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
-                rows="5"
-                placeholder="Contoh: 'Seorang pahlawan wanita dengan pedang bercahaya sedang melawan naga di atas puncak gunung. Latar belakang langit malam dengan bintang gemerlap.'"
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-              />
-              
-              <button
-                className="mt-4 w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 rounded-xl hover:opacity-90 transition font-semibold disabled:opacity-50"
-                onClick={handleGenerate}
-                disabled={loading || !prompt}
-              >
-                {loading ? '⏳ Generating...' : '🚀 Generate Sekarang'}
-              </button>
-
-              {status && (
-                <div className={`mt-4 p-3 rounded-xl text-sm ${
-                  status.includes('✅') ? 'bg-green-100 text-green-700' :
-                  status.includes('❌') ? 'bg-red-100 text-red-700' :
-                  'bg-blue-100 text-blue-700'
-                }`}>
-                  {status}
+              <div className="grid grid-cols-2 gap-4 mt-6">
+                <div className="bg-purple-50 p-4 rounded-xl">
+                  <p className="text-2xl">✂️</p>
+                  <p className="font-semibold text-sm">Auto Potong</p>
+                  <p className="text-xs text-gray-500">Potong gambar horizontal otomatis</p>
                 </div>
-              )}
-            </div>
-
-            {result && (
-              <div className="bg-white rounded-2xl shadow-xl p-6">
-                <h2 className="text-xl font-semibold mb-4">📖 Hasil Generate</h2>
-                <div className="bg-gray-50 rounded-xl p-4 whitespace-pre-wrap text-gray-700 leading-relaxed max-h-96 overflow-y-auto">
-                  {result}
+                <div className="bg-blue-50 p-4 rounded-xl">
+                  <p className="text-2xl">📦</p>
+                  <p className="font-semibold text-sm">Ekspor ZIP</p>
+                  <p className="text-xs text-gray-500">Download semua panel</p>
                 </div>
-                <button
-                  className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm"
-                  onClick={() => navigator.clipboard.writeText(result)}
-                >
-                  📋 Copy Teks
-                </button>
+                <div className="bg-green-50 p-4 rounded-xl">
+                  <p className="text-2xl">🤖</p>
+                  <p className="font-semibold text-sm">Naskah AI</p>
+                  <p className="text-xs text-gray-500">Generate dialog per panel</p>
+                </div>
+                <div className="bg-yellow-50 p-4 rounded-xl">
+                  <p className="text-2xl">🎬</p>
+                  <p className="font-semibold text-sm">Video Rekap</p>
+                  <p className="text-xs text-gray-500">Jadi video YouTube</p>
+                </div>
               </div>
-            )}
+            </div>
           </div>
 
           {/* KOLOM KANAN: API KEYS */}
@@ -202,24 +159,20 @@ export default function Home() {
                   </span>
                 </div>
               </div>
-
-              <div className="mt-4 border-t pt-4">
-                <p className="text-xs text-gray-500">💡 Sistem menggunakan key secara bergantian (Round Robin) untuk stabilitas</p>
-              </div>
             </div>
 
             <div className="bg-white rounded-2xl shadow-xl p-6">
               <h2 className="text-xl font-semibold mb-4">🔑 Daftar API Key</h2>
               
-              <div className="space-y-2 max-h-60 overflow-y-auto">
+              <div className="space-y-2 max-h-40 overflow-y-auto">
                 {apiKeys.length === 0 ? (
                   <p className="text-gray-400 text-sm text-center py-4">
-                    Belum ada API Key terdaftar
+                    Belum ada API Key
                   </p>
                 ) : (
                   apiKeys.map((key, index) => (
                     <div key={index} className="flex items-center justify-between bg-gray-50 p-2 rounded-lg">
-                      <span className="text-xs font-mono truncate max-w-[150px]">
+                      <span className="text-xs font-mono truncate max-w-[120px]">
                         {key.substring(0, 15)}...
                       </span>
                       <div className="flex gap-2">
@@ -240,37 +193,36 @@ export default function Home() {
             </div>
 
             <div className="bg-white rounded-2xl shadow-xl p-6">
-              <h2 className="text-xl font-semibold mb-4">➕ Tambah API Key Baru</h2>
+              <h2 className="text-xl font-semibold mb-4">➕ Tambah API Key</h2>
               
               <input
                 type="text"
-                className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
-                placeholder="Masukkan API Key (AQ. atau AIxAy...)"
+                className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 text-sm"
+                placeholder="Masukkan API Key"
                 value={newKey}
                 onChange={(e) => setNewKey(e.target.value)}
               />
               
               <button
-                className="mt-3 w-full bg-green-600 text-white py-2 rounded-xl hover:bg-green-700 transition font-semibold disabled:opacity-50"
+                className="mt-3 w-full bg-green-600 text-white py-2 rounded-xl hover:bg-green-700 transition font-semibold"
                 onClick={handleAddKey}
                 disabled={!newKey}
               >
                 Tambah Kunci
               </button>
 
-              <p className="text-xs text-gray-500 mt-2">
-                📌 Dapatkan API Key di 
-                <a href="https://aistudio.google.com" target="_blank" className="text-blue-600 hover:underline ml-1" rel="noreferrer">
-                  Google AI Studio
+              <p className="text-xs text-gray-500 mt-2 text-center">
+                <a href="https://aistudio.google.com" target="_blank" className="text-blue-600 hover:underline" rel="noreferrer">
+                  Dapatkan di Google AI Studio
                 </a>
               </p>
             </div>
           </div>
         </div>
 
+        {/* FOOTER */}
         <div className="mt-8 text-center text-xs text-gray-400 border-t pt-4">
-          <p>Manhwa Studio AI v2.0 - Menggunakan Google Gemini AI</p>
-          <p className="mt-1">Sistem rotasi API key untuk penggunaan tanpa hambatan</p>
+          <p>Manhwa Studio AI v3.0 - Auto Potong Panel & Video Rekap</p>
         </div>
       </div>
     </div>
