@@ -71,17 +71,12 @@ export default function Home() {
     <div className="min-h-screen bg-[#0a0a0f] p-4">
       <div className="max-w-6xl mx-auto animate-fade-in">
         
-        {/* HEADER */}
         <div className="text-center mb-10">
-          <h1 className="text-5xl font-extrabold gradient-text font-orbitron">
-            🎨 MANHWA STUDIO AI
-          </h1>
-          <p className="text-gray-400 mt-3 text-lg">
-            Buat komik manhwa dengan AI, potong panel otomatis, dan ekspor!
-          </p>
+          <h1 className="text-5xl font-extrabold gradient-text font-orbitron">🎨 MANHWA STUDIO AI</h1>
+          <p className="text-gray-400 mt-3 text-lg">Buat komik manhwa dengan AI, potong panel otomatis, dan ekspor!</p>
         </div>
 
-        {/* MENU NAVIGASI - Tambah 1 menu lagi jadi 6 */}
+        {/* MENU NAVIGASI - 6 MENU */}
         <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-10">
           <Link href="/" className="glass hover:border-purple-500/30 transition-all duration-300 p-4 rounded-xl text-center group card-hover">
             <div className="text-2xl mb-1">🏠</div>
@@ -109,7 +104,6 @@ export default function Home() {
           </Link>
         </div>
 
-        {/* GRID UTAMA */}
         <div className="grid md:grid-cols-3 gap-6">
           
           <div className="md:col-span-2 space-y-6">
@@ -145,7 +139,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* INFO TAMBAHAN: Novel to Story */}
             <div className="glass rounded-2xl p-6 card-hover border border-orange-500/20">
               <div className="flex items-center gap-3">
                 <span className="text-3xl">📚</span>
