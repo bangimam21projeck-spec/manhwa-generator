@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 export default function Home() {
   const [prompt, setPrompt] = useState('');
@@ -59,8 +60,8 @@ export default function Home() {
   };
 
   const handleAddKey = async () => {
-    if (!newKey || !newKey.startsWith('AIxAy')) {
-      alert('API Key harus dimulai dengan "AIxAy"');
+    if (!newKey || newKey.length < 10) {
+      alert('API Key tidak valid! Minimal 10 karakter.');
       return;
     }
 
@@ -106,19 +107,35 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-4">
       <div className="max-w-6xl mx-auto">
         
+        {/* HEADER + NAVIGASI */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-            🎨 MANHWA GENERATOR
+            🎨 MANHWA STUDIO AI
           </h1>
-          <p className="text-gray-600 mt-2">Buat komik manhwa dengan AI, lengkap dengan rotasi API key!</p>
+          <p className="text-gray-600 mt-2">Buat komik manhwa dengan AI, upload gambar, dan potong panel!</p>
+          
+          {/* NAVIGASI MENU */}
+          <div className="flex justify-center gap-4 mt-4 flex-wrap">
+            <Link href="/" className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition text-sm">
+              🏠 Beranda
+            </Link>
+            <Link href="/editor" className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm">
+              ✂️ Editor Panel
+            </Link>
+            <a href="#api" className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm">
+              🔑 API Keys
+            </a>
+          </div>
         </div>
 
+        {/* GRID UTAMA */}
         <div className="grid md:grid-cols-3 gap-6">
           
+          {/* KOLOM KIRI: GENERATE */}
           <div className="md:col-span-2 space-y-6">
             
             <div className="bg-white rounded-2xl shadow-xl p-6">
-              <h2 className="text-xl font-semibold mb-4">📝 Generate Manhwa</h2>
+              <h2 className="text-xl font-semibold mb-4">📝 Generate Cerita Manhwa</h2>
               
               <textarea
                 className="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
@@ -150,14 +167,21 @@ export default function Home() {
             {result && (
               <div className="bg-white rounded-2xl shadow-xl p-6">
                 <h2 className="text-xl font-semibold mb-4">📖 Hasil Generate</h2>
-                <div className="bg-gray-50 rounded-xl p-4 whitespace-pre-wrap text-gray-700 leading-relaxed">
+                <div className="bg-gray-50 rounded-xl p-4 whitespace-pre-wrap text-gray-700 leading-relaxed max-h-96 overflow-y-auto">
                   {result}
                 </div>
+                <button
+                  className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm"
+                  onClick={() => navigator.clipboard.writeText(result)}
+                >
+                  📋 Copy Teks
+                </button>
               </div>
             )}
           </div>
 
-          <div className="space-y-6">
+          {/* KOLOM KANAN: API KEYS */}
+          <div className="space-y-6" id="api">
             
             <div className="bg-white rounded-2xl shadow-xl p-6">
               <h2 className="text-xl font-semibold mb-4">🔄 Status Rotasi</h2>
@@ -180,7 +204,7 @@ export default function Home() {
               </div>
 
               <div className="mt-4 border-t pt-4">
-                <p className="text-xs text-gray-500">💡 Sistem akan menggunakan key secara bergantian (Round Robin) untuk stabilitas</p>
+                <p className="text-xs text-gray-500">💡 Sistem menggunakan key secara bergantian (Round Robin) untuk stabilitas</p>
               </div>
             </div>
 
@@ -221,7 +245,7 @@ export default function Home() {
               <input
                 type="text"
                 className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
-                placeholder="Masukkan API Key (AIxAy...)"
+                placeholder="Masukkan API Key (AQ. atau AIxAy...)"
                 value={newKey}
                 onChange={(e) => setNewKey(e.target.value)}
               />
@@ -245,7 +269,7 @@ export default function Home() {
         </div>
 
         <div className="mt-8 text-center text-xs text-gray-400 border-t pt-4">
-          <p>Manhwa Generator v1.0 - Menggunakan Google Gemini AI</p>
+          <p>Manhwa Studio AI v2.0 - Menggunakan Google Gemini AI</p>
           <p className="mt-1">Sistem rotasi API key untuk penggunaan tanpa hambatan</p>
         </div>
       </div>
