@@ -13,7 +13,6 @@ export default function ExpandPage() {
   const [expandSize, setExpandSize] = useState(50);
   const fileInputRef = useRef(null);
 
-  // Upload gambar
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -28,7 +27,6 @@ export default function ExpandPage() {
     }
   };
 
-  // Perluas gambar dengan AI
   const handleExpand = async () => {
     if (!image) {
       alert('Upload gambar dulu!');
@@ -64,13 +62,11 @@ export default function ExpandPage() {
     }
   };
 
-  // Download hasil
   const downloadImage = () => {
     if (!expandedImage) {
       alert('Tidak ada gambar untuk diunduh!');
       return;
     }
-
     const link = document.createElement('a');
     link.download = 'expanded-image.png';
     link.href = expandedImage;
@@ -78,71 +74,36 @@ export default function ExpandPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-4">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-[#0a0a0f] p-4">
+      <div className="max-w-6xl mx-auto animate-fade-in">
         
-        {/* HEADER */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-            🖼️ Perluas Gambar dengan AI
-          </h1>
-          <p className="text-gray-600 mt-2">Upload gambar dan perluas background secara otomatis!</p>
+          <h1 className="text-4xl font-bold gradient-text font-orbitron">🖼️ Perluas Gambar dengan AI</h1>
+          <p className="text-gray-400 mt-2">Upload gambar dan perluas background secara otomatis!</p>
           
           <div className="flex justify-center gap-4 mt-4 flex-wrap">
-            <Link href="/" className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition text-sm">
-              🏠 Beranda
-            </Link>
-            <Link href="/editor" className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm">
-              ✂️ Potong Panel
-            </Link>
-            <Link href="/expand" className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm">
-              🖼️ Perluas Gambar
-            </Link>
+            <Link href="/" className="glass hover:border-purple-500/30 px-4 py-2 rounded-lg text-sm text-gray-300 hover:text-white transition">🏠 Beranda</Link>
+            <Link href="/editor" className="glass hover:border-blue-500/30 px-4 py-2 rounded-lg text-sm text-gray-300 hover:text-white transition">✂️ Potong Panel</Link>
+            <Link href="/expand" className="glass hover:border-green-500/30 px-4 py-2 rounded-lg text-sm text-gray-300 hover:text-white transition">🖼️ Perluas Gambar</Link>
           </div>
         </div>
 
-        {/* MAIN */}
         <div className="grid md:grid-cols-3 gap-6">
           
-          {/* KOLOM KIRI: KONTROL */}
           <div className="space-y-6">
-            
-            <div className="bg-white rounded-2xl shadow-xl p-6">
-              <h2 className="text-xl font-semibold mb-4">📤 Upload Gambar</h2>
-              
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleImageUpload}
-                accept="image/*"
-                className="hidden"
-              />
-              
-              <button
-                className="w-full bg-blue-600 text-white py-3 rounded-xl hover:bg-blue-700 transition font-semibold"
-                onClick={() => fileInputRef.current.click()}
-              >
-                📁 Pilih Gambar
-              </button>
-              
-              <p className="text-xs text-gray-500 mt-2 text-center">
-                Mendukung JPG, PNG, WebP
-              </p>
+            <div className="glass rounded-2xl p-6 card-hover">
+              <h2 className="text-xl font-bold text-white mb-4">📤 Upload Gambar</h2>
+              <input type="file" ref={fileInputRef} onChange={handleImageUpload} accept="image/*" className="hidden" />
+              <button className="w-full btn-primary" onClick={() => fileInputRef.current.click()}>📁 Pilih Gambar</button>
+              <p className="text-xs text-gray-500 mt-2 text-center">Mendukung JPG, PNG, WebP</p>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-xl p-6">
-              <h2 className="text-xl font-semibold mb-4">⚙️ Pengaturan Perluasan</h2>
-              
+            <div className="glass rounded-2xl p-6 card-hover">
+              <h2 className="text-xl font-bold text-white mb-4">⚙️ Pengaturan</h2>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Arah Perluasan:
-                  </label>
-                  <select
-                    value={expandDirection}
-                    onChange={(e) => setExpandDirection(e.target.value)}
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
-                  >
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Arah Perluasan:</label>
+                  <select value={expandDirection} onChange={(e) => setExpandDirection(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-purple-500/50 focus:outline-none">
                     <option value="all">Semua Arah</option>
                     <option value="top">Atas</option>
                     <option value="bottom">Bawah</option>
@@ -152,122 +113,50 @@ export default function ExpandPage() {
                     <option value="vertical">Vertikal (Atas + Bawah)</option>
                   </select>
                 </div>
-
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Ukuran Perluasan: {expandSize}%
-                  </label>
-                  <input
-                    type="range"
-                    min="10"
-                    max="200"
-                    value={expandSize}
-                    onChange={(e) => setExpandSize(Number(e.target.value))}
-                    className="w-full"
-                  />
-                  <div className="flex justify-between text-xs text-gray-400">
-                    <span>10%</span>
-                    <span>100%</span>
-                    <span>200%</span>
-                  </div>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Ukuran Perluasan: {expandSize}%</label>
+                  <input type="range" min="10" max="200" value={expandSize} onChange={(e) => setExpandSize(Number(e.target.value))} className="w-full accent-purple-500" />
                 </div>
-                
-                <button
-                  className="w-full bg-green-600 text-white py-3 rounded-xl hover:bg-green-700 transition font-semibold disabled:opacity-50"
-                  onClick={handleExpand}
-                  disabled={!image || loading}
-                >
-                  {loading ? '⏳ Memproses...' : '🚀 Perluas Gambar'}
-                </button>
+                <button className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-semibold transition disabled:opacity-50" onClick={handleExpand} disabled={!image || loading}>{loading ? '⏳ Memproses...' : '🚀 Perluas Gambar'}</button>
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-xl p-6">
-              <h2 className="text-xl font-semibold mb-4">📊 Status</h2>
-              
+            <div className="glass rounded-2xl p-6 card-hover">
+              <h2 className="text-xl font-bold text-white mb-4">📊 Status</h2>
               <div className="space-y-2 text-sm">
-                <p className="text-gray-600">
-                  <span className="font-semibold">Gambar:</span>{' '}
-                  {image ? '✅ Terupload' : '⏳ Belum'}
-                </p>
-                <p className="text-gray-600">
-                  <span className="font-semibold">Hasil:</span>{' '}
-                  {expandedImage ? '✅ Selesai' : '⏳ Belum'}
-                </p>
-                {status && (
-                  <div className={`p-2 rounded-lg text-xs ${
-                    status.includes('✅') ? 'bg-green-100 text-green-700' :
-                    status.includes('❌') ? 'bg-red-100 text-red-700' :
-                    'bg-blue-100 text-blue-700'
-                  }`}>
-                    {status}
-                  </div>
-                )}
+                <p className="text-gray-400"><span className="font-semibold text-gray-300">Gambar:</span> {image ? '✅ Terupload' : '⏳ Belum'}</p>
+                <p className="text-gray-400"><span className="font-semibold text-gray-300">Hasil:</span> {expandedImage ? '✅ Selesai' : '⏳ Belum'}</p>
+                {status && <div className={`p-2 rounded-lg text-xs ${status.includes('✅') ? 'bg-green-500/20 text-green-400' : status.includes('❌') ? 'bg-red-500/20 text-red-400' : 'bg-blue-500/20 text-blue-400'}`}>{status}</div>}
               </div>
             </div>
 
             {expandedImage && (
-              <div className="bg-white rounded-2xl shadow-xl p-6">
-                <button
-                  className="w-full bg-yellow-600 text-white py-2 rounded-lg hover:bg-yellow-700 transition font-semibold"
-                  onClick={downloadImage}
-                >
-                  💾 Download Hasil
-                </button>
+              <div className="glass rounded-2xl p-6 card-hover">
+                <button className="w-full bg-yellow-600 hover:bg-yellow-700 text-white py-2 rounded-lg font-semibold transition" onClick={downloadImage}>💾 Download Hasil</button>
               </div>
             )}
           </div>
 
-          {/* KOLOM KANAN: PREVIEW */}
           <div className="md:col-span-2 space-y-6">
-            
-            <div className="bg-white rounded-2xl shadow-xl p-6">
-              <h2 className="text-xl font-semibold mb-4">🖼️ Preview</h2>
-              
-              {image && (
-                <div className="border-2 border-gray-300 rounded-xl overflow-hidden bg-gray-50 p-4">
-                  <p className="text-sm text-gray-500 mb-2">Gambar Asli:</p>
-                  <img src={imageUrl} alt="Original" className="max-h-80 mx-auto object-contain" />
-                </div>
-              )}
-              
-              {expandedImage && (
-                <div className="border-2 border-green-300 rounded-xl overflow-hidden bg-gray-50 p-4 mt-4">
-                  <p className="text-sm text-green-500 mb-2">Hasil Perluasan:</p>
-                  <img src={expandedImage} alt="Expanded" className="max-h-80 mx-auto object-contain" />
-                </div>
-              )}
-              
-              {!image && (
-                <div className="text-center py-12 text-gray-400">
-                  <p className="text-6xl mb-4">🖼️</p>
-                  <p>Upload gambar untuk memulai perluasan</p>
-                </div>
-              )}
+            <div className="glass rounded-2xl p-6 card-hover">
+              <h2 className="text-xl font-bold text-white mb-4">🖼️ Preview</h2>
+              {image && <div className="border border-white/10 rounded-xl overflow-hidden bg-black/30 p-4"><p className="text-sm text-gray-500 mb-2">Gambar Asli:</p><img src={imageUrl} alt="Original" className="max-h-80 mx-auto object-contain" /></div>}
+              {expandedImage && <div className="border border-green-500/20 rounded-xl overflow-hidden bg-black/30 p-4 mt-4"><p className="text-sm text-green-400 mb-2">Hasil Perluasan:</p><img src={expandedImage} alt="Expanded" className="max-h-80 mx-auto object-contain" /></div>}
+              {!image && <div className="text-center py-12 text-gray-500"><p className="text-6xl mb-4">🖼️</p><p>Upload gambar untuk memulai perluasan</p></div>}
             </div>
 
-            {/* INFO */}
-            <div className="bg-white rounded-2xl shadow-xl p-6">
-              <h2 className="text-xl font-semibold mb-4">ℹ️ Tentang Perluasan Gambar</h2>
-              <div className="text-sm text-gray-600 space-y-2">
+            <div className="glass rounded-2xl p-6 card-hover">
+              <h2 className="text-xl font-bold text-white mb-4">ℹ️ Tentang Perluasan</h2>
+              <div className="text-sm text-gray-400 space-y-2">
                 <p>✨ Fitur ini menggunakan AI untuk memperluas background gambar secara otomatis.</p>
-                <p>📐 Pilih arah perluasan (atas, bawah, kiri, kanan, atau semua arah).</p>
-                <p>📏 Atur ukuran perluasan dari 10% hingga 200%.</p>
-                <p>🎨 Hasil akan seamless dan natural seperti aslinya.</p>
-                <div className="bg-yellow-50 p-3 rounded-lg mt-2">
-                  <p className="text-xs text-yellow-700">
-                    ⚠️ Fitur ini membutuhkan API Key Gemini yang valid. 
-                    Pastikan Anda sudah menambahkan API Key di halaman Beranda.
-                  </p>
-                </div>
+                <p>📐 Pilih arah dan ukuran perluasan sesuai kebutuhan.</p>
+                <div className="bg-yellow-500/10 border border-yellow-500/20 p-3 rounded-lg mt-2"><p className="text-xs text-yellow-400">⚠️ Fitur ini membutuhkan API Key Gemini yang valid.</p></div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="mt-8 text-center text-xs text-gray-400 border-t pt-4">
-          <p>Manhwa Studio AI v3.0 - Perluas Gambar dengan AI</p>
-        </div>
+        <div className="mt-8 text-center text-xs text-gray-600 border-t border-white/5 pt-4">Manhwa Studio AI v3.0 - Perluas Gambar</div>
       </div>
     </div>
   );
