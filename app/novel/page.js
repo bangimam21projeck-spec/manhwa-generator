@@ -6,7 +6,7 @@ import Link from 'next/link';
 export default function NovelPage() {
   const [novelText, setNovelText] = useState('');
   const [selectedStyle, setSelectedStyle] = useState('semangat');
-  const [paragraphMode, setParagraphMode] = useState('auto'); // 'auto' | 'range' | 'manual'
+  const [paragraphMode, setParagraphMode] = useState('auto');
   const [rangeMin, setRangeMin] = useState(2);
   const [rangeMax, setRangeMax] = useState(5);
   const [customParagraphs, setCustomParagraphs] = useState(3);
@@ -15,7 +15,6 @@ export default function NovelPage() {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState('');
 
-  // ===== GAYA CERITA =====
   const styles = [
     { id: 'semangat', label: '🔥 Semangat', desc: 'Penuh energi, motivasi, dan semangat juang', icon: '🔥' },
     { id: 'teliti', label: '🔍 Teliti', desc: 'Detail, analitis, dan penuh pengamatan', icon: '🔍' },
@@ -27,7 +26,6 @@ export default function NovelPage() {
     { id: 'epik', label: '⚔️ Epik', desc: 'Megah, heroik, dan penuh petualangan', icon: '⚔️' }
   ];
 
-  // ===== PROMPT PER GAYA =====
   const getStylePrompt = (styleId) => {
     const prompts = {
       semangat: `Bacalah teks novel ini dengan gaya SEMANGAT dan PENUH ENERGI. Gunakan kata-kata yang membangkitkan motivasi. Tekankan pada semangat juang karakter. Buat pembaca merasa terinspirasi.`,
@@ -42,7 +40,6 @@ export default function NovelPage() {
     return prompts[styleId] || prompts.semangat;
   };
 
-  // ===== GENERATE =====
   const handleGenerate = async () => {
     if (!novelText || novelText.trim().length < 10) {
       alert('Masukkan teks novel minimal 10 karakter!');
@@ -145,14 +142,12 @@ Output Anda HANYALAH cerita dalam bahasa Indonesia, tidak ada yang lain.`;
     }
   };
 
-  // ===== COPY HASIL =====
   const copyResult = () => {
     if (!result) return;
     navigator.clipboard.writeText(result);
     alert('✅ Teks berhasil disalin!');
   };
 
-  // ===== DOWNLOAD TXT =====
   const downloadResult = () => {
     if (!result) return;
     const blob = new Blob([result], { type: 'text/plain' });
@@ -168,7 +163,6 @@ Output Anda HANYALAH cerita dalam bahasa Indonesia, tidak ada yang lain.`;
     <div className="min-h-screen bg-[#0a0a0f] p-4">
       <div className="max-w-6xl mx-auto animate-fade-in">
         
-        {/* HEADER */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold gradient-text font-orbitron">📚 Novel to Story</h1>
           <p className="text-gray-400 mt-2">Ubah teks novel menjadi cerita dengan gaya yang Anda pilih!</p>
@@ -179,10 +173,8 @@ Output Anda HANYALAH cerita dalam bahasa Indonesia, tidak ada yang lain.`;
           </div>
         </div>
 
-        {/* MAIN */}
         <div className="grid md:grid-cols-3 gap-6">
           
-          {/* KOLOM KIRI: INPUT */}
           <div className="space-y-6">
             
             <div className="glass rounded-2xl p-6 card-hover">
@@ -218,12 +210,10 @@ Output Anda HANYALAH cerita dalam bahasa Indonesia, tidak ada yang lain.`;
               </div>
             </div>
 
-            {/* ===== PENGATURAN PARAGRAF ===== */}
             <div className="glass rounded-2xl p-6 card-hover">
               <h2 className="text-xl font-bold text-white mb-4">📄 Pengaturan Paragraf</h2>
               
               <div className="space-y-3">
-                {/* Opsi 1: Auto (AI) */}
                 <div className="flex items-center gap-3">
                   <input
                     type="radio"
@@ -232,12 +222,9 @@ Output Anda HANYALAH cerita dalam bahasa Indonesia, tidak ada yang lain.`;
                     onChange={() => setParagraphMode('auto')}
                     className="accent-purple-500"
                   />
-                  <label htmlFor="auto" className="text-gray-300 text-sm">
-                    🤖 Otomatis (AI tentukan)
-                  </label>
+                  <label htmlFor="auto" className="text-gray-300 text-sm">🤖 Otomatis (AI tentukan)</label>
                 </div>
                 
-                {/* Opsi 2: Rentang */}
                 <div className="flex items-center gap-3 flex-wrap">
                   <input
                     type="radio"
@@ -246,9 +233,7 @@ Output Anda HANYALAH cerita dalam bahasa Indonesia, tidak ada yang lain.`;
                     onChange={() => setParagraphMode('range')}
                     className="accent-purple-500"
                   />
-                  <label htmlFor="range" className="text-gray-300 text-sm">
-                    📏 Rentang:
-                  </label>
+                  <label htmlFor="range" className="text-gray-300 text-sm">📏 Rentang:</label>
                   <input
                     type="number"
                     min="1"
@@ -271,7 +256,6 @@ Output Anda HANYALAH cerita dalam bahasa Indonesia, tidak ada yang lain.`;
                   <span className="text-gray-400 text-sm">paragraf</span>
                 </div>
                 
-                {/* Opsi 3: Manual */}
                 <div className="flex items-center gap-3">
                   <input
                     type="radio"
@@ -280,9 +264,7 @@ Output Anda HANYALAH cerita dalam bahasa Indonesia, tidak ada yang lain.`;
                     onChange={() => setParagraphMode('manual')}
                     className="accent-purple-500"
                   />
-                  <label htmlFor="manual" className="text-gray-300 text-sm">
-                    ✏️ Manual:
-                  </label>
+                  <label htmlFor="manual" className="text-gray-300 text-sm">✏️ Manual:</label>
                   <input
                     type="number"
                     min="1"
@@ -328,7 +310,6 @@ Output Anda HANYALAH cerita dalam bahasa Indonesia, tidak ada yang lain.`;
             )}
           </div>
 
-          {/* KOLOM KANAN: HASIL */}
           <div className="md:col-span-2 space-y-6">
             
             <div className="glass rounded-2xl p-6 card-hover">
@@ -364,7 +345,6 @@ Output Anda HANYALAH cerita dalam bahasa Indonesia, tidak ada yang lain.`;
               )}
             </div>
 
-            {/* INFO */}
             <div className="glass rounded-2xl p-6 card-hover">
               <h2 className="text-xl font-bold text-white mb-4">ℹ️ Tentang Novel to Story</h2>
               <div className="text-sm text-gray-400 space-y-2">
