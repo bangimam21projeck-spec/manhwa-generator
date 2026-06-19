@@ -1,8 +1,7 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { NextResponse } from 'next/server';
 
-// ===================== SISTEM API KEY =====================
-
+// ===== SISTEM API KEY =====
 let webApiKeys = [];
 
 function getEnvKeys() {
@@ -11,9 +10,7 @@ function getEnvKeys() {
 }
 
 function getAllKeys() {
-  if (webApiKeys.length > 0) {
-    return webApiKeys;
-  }
+  if (webApiKeys.length > 0) return webApiKeys;
   return getEnvKeys();
 }
 
@@ -22,43 +19,55 @@ let currentIndex = 0;
 function getNextKey() {
   const keys = getAllKeys();
   if (keys.length === 0) {
-    throw new Error('❌ Tidak ada API Key! Tambahkan key di web atau di .env.local');
+    throw new Error('❌ Tidak ada API Key!');
   }
   const key = keys[currentIndex];
   currentIndex = (currentIndex + 1) % keys.length;
   return key;
 }
 
-// Tambah key dari web
-export function addWebKey(key) {
-  if (!webApiKeys.includes(key)) {
-    webApiKeys.push(key);
-  }
-  return webApiKeys;
-}
+// ===== DAFTAR MODEL YANG VALID =====
+const MODEL_LIST = [
+  'gemini-2.5-flash',
+  'gemini-2.0-flash',
+  'gemini-1.5-flash',
+  'gemini-pro',
+  'models/gemini-2.5-flash',
+  'models/gemini-2.0-flash',
+  'models/gemini-1.5-flash',
+  'models/gemini-pro'
+];
 
-export function removeWebKey(index) {
-  if (index >= 0 && index < webApiKeys.length) {
-    webApiKeys.splice(index, 1);
-  }
-  return webApiKeys;
-}
-
-export function getWebKeys() {
-  return webApiKeys;
-}
-
-// ===================== EXPAND IMAGE =====================
-
-async function expandImageWithAI(imageData, direction, size) {
+// ===== FUNGSI GENERATE DENGAN FALLBACK =====
+async function generateWithFallback(prompt) {
   const apiKey = getNextKey();
+  const genAI = new GoogleGenerativeAI(apiKey);
   
-  try {
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+  let lastError = null;
+  
+  for (const modelName of MODEL_LIST) {
+    try {
+      const model = genAI.getGenerativeModel({ model: modelName });
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      
+      return {
+        text: response.text(),
+        modelUsed: modelName
+      };
+    } catch (error) {
+      lastError = error;
+      console.log(`Model ${modelName} gagal, mencoba model lain...`);
+      continue;
+    }
+  }
+  
+  throw new Error(`Semua model gagal. Error terakhir: ${lastError?.message || 'Tidak diketahui'}`);
+}
 
-    // Buat prompt untuk expand gambar
-    const prompt = `Perluas gambar ini ke arah ${direction} dengan ukuran ${size}%.
+// ===== EXPAND IMAGE =====
+async function expandImageWithAI(imageData, direction, size) {
+  const prompt = `Perluas gambar ini ke arah ${direction} dengan ukuran ${size}%.
 
 Deskripsi yang harus diperhatikan:
 1. Pertahankan gaya dan warna yang sama
@@ -69,36 +78,18 @@ Deskripsi yang harus diperhatikan:
 Arah perluasan: ${direction}
 Persentase perluasan: ${size}%`;
 
-    // Karena Gemini Vision belum support image editing secara langsung,
-    // kita akan gunakan pendekatan generate deskripsi + rekomendasi
-    
-    const result = await model.generateContent([
-      prompt,
-      { inlineData: { data: imageData.split(',')[1], mimeType: "image/png" } }
-    ]);
-    
-    const response = await result.response;
-    const text = response.text();
-    
-    // Untuk sekarang, kita return deskripsi + rekomendasi
-    // Karena Gemini belum support image generation
-    return {
-      success: true,
-      data: imageData, // Kembalikan gambar asli dulu
-      description: text,
-      direction: direction,
-      size: size,
-      note: "⚠️ Gemini Vision saat ini hanya bisa menganalisis gambar, belum bisa generate gambar. Gunakan tools lain untuk generate gambar."
-    };
-    
-  } catch (error) {
-    console.error('Error expanding image:', error);
-    throw new Error('Gagal memperluas gambar: ' + error.message);
-  }
+  // Untuk sekarang, kita return deskripsi + rekomendasi
+  // Karena Gemini belum support image generation
+  const result = await generateWithFallback(prompt);
+  
+  return {
+    description: result.text,
+    modelUsed: result.modelUsed,
+    note: "⚠️ Gemini saat ini hanya bisa menganalisis gambar, belum bisa generate gambar. Gunakan tools lain untuk generate gambar."
+  };
 }
 
-// ===================== API ROUTES =====================
-
+// ===== API ROUTES =====
 export async function POST(request) {
   try {
     const { image, direction, size } = await request.json();
@@ -111,17 +102,20 @@ export async function POST(request) {
     }
 
     const result = await expandImageWithAI(image, direction || 'all', size || 50);
-    
+    const allKeys = getAllKeys();
+    const totalKeys = allKeys.length;
+
     return NextResponse.json({
       success: true,
-      data: result.data,
+      data: image, // Kembalikan gambar asli dulu
       description: result.description,
       direction: result.direction,
       size: result.size,
-      note: result.note || '',
+      note: result.note,
       meta: {
-        keyUsed: `Key ${currentIndex} dari ${getAllKeys().length}`,
-        totalKeys: getAllKeys().length
+        modelUsed: result.modelUsed,
+        keyUsed: `Key ${(currentIndex === 0 ? totalKeys : currentIndex)} dari ${totalKeys}`,
+        totalKeys: totalKeys
       }
     });
 
@@ -139,6 +133,7 @@ export async function GET() {
     success: true,
     keys: allKeys,
     total: allKeys.length,
-    active: allKeys.length > 0
+    active: allKeys.length > 0,
+    models: MODEL_LIST
   });
 }
