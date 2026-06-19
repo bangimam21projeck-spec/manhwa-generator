@@ -29,7 +29,7 @@ async function generateManhwa(prompt) {
   
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     const fullPrompt = `Kamu adalah pembuat komik manhwa profesional. Buatkan cerita komik manhwa berdasarkan deskripsi berikut:
 
