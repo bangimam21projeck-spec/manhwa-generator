@@ -55,7 +55,7 @@ async function generateNaskah(panelIndex, totalPanels) {
   
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
 
     const prompt = `Kamu adalah penulis komik manhwa profesional. Buatkan naskah dialog dan narasi untuk Panel ${panelIndex} dari total ${totalPanels} panel.
 
