@@ -1,7 +1,6 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { NextResponse } from 'next/server';
 
-// ===== SISTEM API KEY =====
 let webApiKeys = [];
 
 function getEnvKeys() {
@@ -38,7 +37,6 @@ export function removeWebKey(index) {
 
 export function getWebKeys() { return webApiKeys; }
 
-// ===== GENERATE =====
 async function generateNovel(prompt) {
   const apiKey = getNextKey();
   
@@ -56,7 +54,6 @@ async function generateNovel(prompt) {
   }
 }
 
-// ===== API ROUTES =====
 export async function POST(request) {
   try {
     const { prompt } = await request.json();
