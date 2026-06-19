@@ -6,7 +6,9 @@ import Link from 'next/link';
 export default function NovelPage() {
   const [novelText, setNovelText] = useState('');
   const [selectedStyle, setSelectedStyle] = useState('semangat');
-  const [paragraphMode, setParagraphMode] = useState('auto');
+  const [paragraphMode, setParagraphMode] = useState('auto'); // 'auto' | 'range' | 'manual'
+  const [rangeMin, setRangeMin] = useState(2);
+  const [rangeMax, setRangeMax] = useState(5);
   const [customParagraphs, setCustomParagraphs] = useState(3);
   const [additionalDetails, setAdditionalDetails] = useState('');
   const [result, setResult] = useState('');
@@ -15,116 +17,28 @@ export default function NovelPage() {
 
   // ===== GAYA CERITA =====
   const styles = [
-    { 
-      id: 'semangat', 
-      label: '🔥 Semangat', 
-      desc: 'Penuh energi, motivasi, dan semangat juang',
-      icon: '🔥'
-    },
-    { 
-      id: 'teliti', 
-      label: '🔍 Teliti', 
-      desc: 'Detail, analitis, dan penuh pengamatan',
-      icon: '🔍'
-    },
-    { 
-      id: 'riang', 
-      label: '🎉 Riang', 
-      desc: 'Ceria, ringan, dan penuh kegembiraan',
-      icon: '🎉'
-    },
-    { 
-      id: 'dramatis', 
-      label: '🎭 Dramatis', 
-      desc: 'Tegang, emosional, dan penuh ketegangan',
-      icon: '🎭'
-    },
-    { 
-      id: 'romantis', 
-      label: '💕 Romantis', 
-      desc: 'Lembut, puitis, dan penuh perasaan',
-      icon: '💕'
-    },
-    { 
-      id: 'misterius', 
-      label: '🔮 Misterius', 
-      desc: 'Penuh teka-teki, gelap, dan intrik',
-      icon: '🔮'
-    },
-    { 
-      id: 'humor', 
-      label: '😄 Humor', 
-      desc: 'Ringan, lucu, dan menghibur',
-      icon: '😄'
-    },
-    { 
-      id: 'epik', 
-      label: '⚔️ Epik', 
-      desc: 'Megah, heroik, dan penuh petualangan',
-      icon: '⚔️'
-    }
+    { id: 'semangat', label: '🔥 Semangat', desc: 'Penuh energi, motivasi, dan semangat juang', icon: '🔥' },
+    { id: 'teliti', label: '🔍 Teliti', desc: 'Detail, analitis, dan penuh pengamatan', icon: '🔍' },
+    { id: 'riang', label: '🎉 Riang', desc: 'Ceria, ringan, dan penuh kegembiraan', icon: '🎉' },
+    { id: 'dramatis', label: '🎭 Dramatis', desc: 'Tegang, emosional, dan penuh ketegangan', icon: '🎭' },
+    { id: 'romantis', label: '💕 Romantis', desc: 'Lembut, puitis, dan penuh perasaan', icon: '💕' },
+    { id: 'misterius', label: '🔮 Misterius', desc: 'Penuh teka-teki, gelap, dan intrik', icon: '🔮' },
+    { id: 'humor', label: '😄 Humor', desc: 'Ringan, lucu, dan menghibur', icon: '😄' },
+    { id: 'epik', label: '⚔️ Epik', desc: 'Megah, heroik, dan penuh petualangan', icon: '⚔️' }
   ];
 
   // ===== PROMPT PER GAYA =====
   const getStylePrompt = (styleId) => {
     const prompts = {
-      semangat: `Bacalah teks novel ini dengan gaya SEMANGAT dan PENUH ENERGI. 
-      - Gunakan kata-kata yang membangkitkan motivasi
-      - Tekankan pada semangat juang karakter
-      - Buat pembaca merasa terinspirasi
-      - Tambahkan intensitas pada setiap aksi
-      - Jangan mengubah makna cerita, hanya gaya penyampaiannya`,
-
-      teliti: `Bacalah teks novel ini dengan gaya TELITI dan ANALITIS.
-      - Fokus pada detail-detail kecil
-      - Gambarkan pengamatan secara mendalam
-      - Tekankan pada logika dan urutan kejadian
-      - Buat pembaca merasa seperti detektif
-      - Jangan mengubah makna cerita, hanya gaya penyampaiannya`,
-
-      riang: `Bacalah teks novel ini dengan gaya RIANG dan CERIA.
-      - Gunakan kata-kata yang ringan dan menyenangkan
-      - Tekankan pada momen-momen bahagia
-      - Buat pembaca merasa senang dan terhibur
-      - Tambahkan sentuhan optimisme
-      - Jangan mengubah makna cerita, hanya gaya penyampaiannya`,
-
-      dramatis: `Bacalah teks novel ini dengan gaya DRAMATIS dan TEGANG.
-      - Tekankan pada konflik dan ketegangan
-      - Gunakan kata-kata yang emosional
-      - Buat pembaca merasa tegang dan penasaran
-      - Tambahkan intensitas pada setiap adegan
-      - Jangan mengubah makna cerita, hanya gaya penyampaiannya`,
-
-      romantis: `Bacalah teks novel ini dengan gaya ROMANTIS dan LEMBUT.
-      - Gunakan kata-kata yang puitis dan indah
-      - Tekankan pada perasaan dan emosi
-      - Buat pembaca merasa terharu dan tersentuh
-      - Tambahkan sentuhan kehangatan
-      - Jangan mengubah makna cerita, hanya gaya penyampaiannya`,
-
-      misterius: `Bacalah teks novel ini dengan gaya MISTERIUS dan GELAP.
-      - Tekankan pada teka-teki dan intrik
-      - Gunakan kata-kata yang menimbulkan rasa penasaran
-      - Buat pembaca merasa seperti sedang memecahkan misteri
-      - Tambahkan suasana mencekam
-      - Jangan mengubah makna cerita, hanya gaya penyampaiannya`,
-
-      humor: `Bacalah teks novel ini dengan gaya HUMOR dan RINGAN.
-      - Gunakan kata-kata yang lucu dan menghibur
-      - Tekankan pada momen-momen konyol
-      - Buat pembaca tertawa dan terhibur
-      - Tambahkan sentuhan komedi
-      - Jangan mengubah makna cerita, hanya gaya penyampaiannya`,
-
-      epik: `Bacalah teks novel ini dengan gaya EPIK dan HEROIK.
-      - Gunakan kata-kata yang megah dan berwibawa
-      - Tekankan pada petualangan dan kepahlawanan
-      - Buat pembaca merasa seperti sedang membaca kisah legenda
-      - Tambahkan skala besar pada setiap adegan
-      - Jangan mengubah makna cerita, hanya gaya penyampaiannya`
+      semangat: `Bacalah teks novel ini dengan gaya SEMANGAT dan PENUH ENERGI. Gunakan kata-kata yang membangkitkan motivasi. Tekankan pada semangat juang karakter. Buat pembaca merasa terinspirasi.`,
+      teliti: `Bacalah teks novel ini dengan gaya TELITI dan ANALITIS. Fokus pada detail-detail kecil. Gambarkan pengamatan secara mendalam. Tekankan pada logika dan urutan kejadian.`,
+      riang: `Bacalah teks novel ini dengan gaya RIANG dan CERIA. Gunakan kata-kata yang ringan dan menyenangkan. Tekankan pada momen-momen bahagia. Buat pembaca merasa senang.`,
+      dramatis: `Bacalah teks novel ini dengan gaya DRAMATIS dan TEGANG. Tekankan pada konflik dan ketegangan. Gunakan kata-kata yang emosional. Buat pembaca merasa tegang dan penasaran.`,
+      romantis: `Bacalah teks novel ini dengan gaya ROMANTIS dan LEMBUT. Gunakan kata-kata yang puitis dan indah. Tekankan pada perasaan dan emosi. Buat pembaca merasa terharu.`,
+      misterius: `Bacalah teks novel ini dengan gaya MISTERIUS dan GELAP. Tekankan pada teka-teki dan intrik. Gunakan kata-kata yang menimbulkan rasa penasaran.`,
+      humor: `Bacalah teks novel ini dengan gaya HUMOR dan RINGAN. Gunakan kata-kata yang lucu dan menghibur. Tekankan pada momen-momen konyol. Buat pembaca tertawa.`,
+      epik: `Bacalah teks novel ini dengan gaya EPIK dan HEROIK. Gunakan kata-kata yang megah dan berwibawa. Tekankan pada petualangan dan kepahlawanan.`
     };
-
     return prompts[styleId] || prompts.semangat;
   };
 
@@ -143,8 +57,16 @@ export default function NovelPage() {
       const stylePrompt = getStylePrompt(selectedStyle);
       const styleLabel = styles.find(s => s.id === selectedStyle)?.label || 'Semangat';
 
-      // Build prompt lengkap
-      let fullPrompt = `Mulai sekarang, Anda adalah "Pembaca Novel Profesional".
+      let paragraphInstruction = '';
+      if (paragraphMode === 'auto') {
+        paragraphInstruction = `Jumlah paragraf: TENTUKAN SENDIRI secara alami berdasarkan isi teks. Bisa 2-6 paragraf sesuai kebutuhan cerita.`;
+      } else if (paragraphMode === 'range') {
+        paragraphInstruction = `Jumlah paragraf: BUATLAH ANTARA ${rangeMin} SAMPAI ${rangeMax} PARAGRAF. Sesuaikan dengan isi teks.`;
+      } else {
+        paragraphInstruction = `Jumlah paragraf: BUATLAH ${customParagraphs} PARAGRAF.`;
+      }
+
+      const fullPrompt = `Mulai sekarang, Anda adalah "Pembaca Novel Profesional".
 
 Saya akan mengirimkan Anda teks berupa cuplikan cerita dari novel. Ikuti aturan di bawah ini dengan tepat.
 
@@ -181,9 +103,7 @@ TAHAP 1 - Pengenalan (diam-diam):
 
    ${additionalDetails ? `DETAIL TAMBAHAN DARI USER: ${additionalDetails}` : ''}
 
-   ${paragraphMode === 'auto' 
-     ? `Jumlah paragraf: Sesuaikan dengan isi teks (2-4 paragraf).` 
-     : `Jumlah paragraf: BUATLAH ${customParagraphs} PARAGRAF.`}
+   ${paragraphInstruction}
 
    - Tulis ulang cerita dari teks tersebut dalam BAHASA INDONESIA.
    - Jika teks asli berbahasa Inggris atau bahasa asing lainnya, TERJEMAHKAN.
@@ -298,10 +218,12 @@ Output Anda HANYALAH cerita dalam bahasa Indonesia, tidak ada yang lain.`;
               </div>
             </div>
 
+            {/* ===== PENGATURAN PARAGRAF ===== */}
             <div className="glass rounded-2xl p-6 card-hover">
               <h2 className="text-xl font-bold text-white mb-4">📄 Pengaturan Paragraf</h2>
               
               <div className="space-y-3">
+                {/* Opsi 1: Auto (AI) */}
                 <div className="flex items-center gap-3">
                   <input
                     type="radio"
@@ -310,9 +232,46 @@ Output Anda HANYALAH cerita dalam bahasa Indonesia, tidak ada yang lain.`;
                     onChange={() => setParagraphMode('auto')}
                     className="accent-purple-500"
                   />
-                  <label htmlFor="auto" className="text-gray-300 text-sm">Otomatis (2-4 paragraf)</label>
+                  <label htmlFor="auto" className="text-gray-300 text-sm">
+                    🤖 Otomatis (AI tentukan)
+                  </label>
                 </div>
                 
+                {/* Opsi 2: Rentang */}
+                <div className="flex items-center gap-3 flex-wrap">
+                  <input
+                    type="radio"
+                    id="range"
+                    checked={paragraphMode === 'range'}
+                    onChange={() => setParagraphMode('range')}
+                    className="accent-purple-500"
+                  />
+                  <label htmlFor="range" className="text-gray-300 text-sm">
+                    📏 Rentang:
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="20"
+                    value={rangeMin}
+                    onChange={(e) => setRangeMin(Number(e.target.value))}
+                    className="w-14 bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-white text-center focus:border-purple-500/50 focus:outline-none"
+                    disabled={paragraphMode !== 'range'}
+                  />
+                  <span className="text-gray-400 text-sm">sampai</span>
+                  <input
+                    type="number"
+                    min="1"
+                    max="20"
+                    value={rangeMax}
+                    onChange={(e) => setRangeMax(Number(e.target.value))}
+                    className="w-14 bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-white text-center focus:border-purple-500/50 focus:outline-none"
+                    disabled={paragraphMode !== 'range'}
+                  />
+                  <span className="text-gray-400 text-sm">paragraf</span>
+                </div>
+                
+                {/* Opsi 3: Manual */}
                 <div className="flex items-center gap-3">
                   <input
                     type="radio"
@@ -321,15 +280,17 @@ Output Anda HANYALAH cerita dalam bahasa Indonesia, tidak ada yang lain.`;
                     onChange={() => setParagraphMode('manual')}
                     className="accent-purple-500"
                   />
-                  <label htmlFor="manual" className="text-gray-300 text-sm">Manual:</label>
+                  <label htmlFor="manual" className="text-gray-300 text-sm">
+                    ✏️ Manual:
+                  </label>
                   <input
                     type="number"
                     min="1"
-                    max="10"
+                    max="20"
                     value={customParagraphs}
                     onChange={(e) => setCustomParagraphs(Number(e.target.value))}
-                    className="w-16 bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-white text-center focus:border-purple-500/50 focus:outline-none"
-                    disabled={paragraphMode === 'auto'}
+                    className="w-14 bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-white text-center focus:border-purple-500/50 focus:outline-none"
+                    disabled={paragraphMode !== 'manual'}
                   />
                   <span className="text-gray-400 text-sm">paragraf</span>
                 </div>
@@ -409,7 +370,7 @@ Output Anda HANYALAH cerita dalam bahasa Indonesia, tidak ada yang lain.`;
               <div className="text-sm text-gray-400 space-y-2">
                 <p>📖 Ubah teks novel menjadi cerita dengan gaya berbeda.</p>
                 <p>🎭 Pilih dari 8 gaya: Semangat, Teliti, Riang, Dramatis, Romantis, Misterius, Humor, Epik.</p>
-                <p>📄 Atur jumlah paragraf (otomatis atau manual).</p>
+                <p>📄 3 mode paragraf: <span className="text-purple-400">Otomatis (AI)</span> | <span className="text-blue-400">Rentang</span> | <span className="text-green-400">Manual</span></p>
                 <p>✏️ Tambahkan detail opsional untuk hasil lebih personal.</p>
                 <div className="bg-yellow-500/10 border border-yellow-500/20 p-3 rounded-lg mt-2">
                   <p className="text-xs text-yellow-400">💡 Semakin panjang teks novel, semakin detail hasil cerita.</p>
